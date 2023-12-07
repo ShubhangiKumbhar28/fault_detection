@@ -2,7 +2,7 @@ from sensor.exception import SensorException
 from sensor.logger import logging
 import os, sys
 from sensor.entity import config_entity
-
+from sensor.components.data_ingestion import DataIngestion
 
 from sensor.utils import get_collection_as_dataframe
         
@@ -16,3 +16,13 @@ if __name__=="__main__":
 
     except Exception as e:
         raise SensorException(e,sys)
+    
+
+
+
+
+
+
+
+
+

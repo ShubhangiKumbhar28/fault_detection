@@ -16,7 +16,6 @@ class DataIngestion:
         except Exception as e:
             raise SensorException(e,sys)
         
-
     def initiate_data_ingestion(self)->artifact_entity.DataIngestionArtifact:
         try:
             logging.info(f"Exporting collection data as pandas dataframe..")

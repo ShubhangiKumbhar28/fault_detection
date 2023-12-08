@@ -32,7 +32,7 @@ class DataIngestion:
             ##create feature store folder if not available
             feature_store_dir = os.path.dirname(self.data_ingetion_config.feature_store_file_path)
             os.makedirs(feature_store_dir,exist_ok=True)
-
+            
             ##Save df to feature store folder 
             df.to_csv(path_or_buf=self.data_ingetion_config.feature_store_file_path,index=False,header=True)
             logging.info("split dataset into train and test set.")

@@ -117,9 +117,10 @@ class DataValidation:
             test_df = pd.read_csv(self.data_ingestion_artifact.test_file_path)
 
             exclude_columns = ["TARGET_COLUMN"]
-            base_df = utils.convert_columns_float(df= base_df, exclude_columns=exclude_columns)
-            train_df = utils.convert_columns_float(df= train_df, exclude_columns=exclude_columns)
-            test_df = utils.convert_columns_float(df= test_df, exclude_columns=exclude_columns)
+            exclude_columns = [TARGET_COLUMN]
+            base_df = utils.convert_columns_float(df=base_df, exclude_columns=exclude_columns)
+            train_df = utils.convert_columns_float(df=train_df, exclude_columns=exclude_columns)
+            test_df = utils.convert_columns_float(df=test_df, exclude_columns=exclude_columns)
 
 
             logging.info(f"Drop null values columns from train df")

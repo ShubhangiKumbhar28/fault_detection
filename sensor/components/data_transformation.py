@@ -4,7 +4,7 @@ from sensor.logger import logging
 from typing import Optional
 import os,sys
 import pandas as pd 
-from sklearn.preprocessing import Pipeline
+from sklearn.pipeline import Pipeline
 from sensor import utils 
 import numpy as np 
 from sensor.config import TARGET_COLUMN
@@ -17,13 +17,15 @@ from sklearn.preprocessing import LabelEncoder
 class DataTransformation:
 
     def __init__(self,data_transformation_config:config_entity.DataTransformationConfig,
-                 data_ingestion_artifact:artifact_entity,DataIngestionArtifact):
+                 data_ingestion_artifact:artifact_entity.DataIngestionArtifact):
         try:
+            logging.info(f"{'>>'*20} Data Transformation {'<<'*20}")
             self.data_transformation_config = data_transformation_config
             self.data_ingestion_artifact = data_ingestion_artifact
-
+                
         except Exception as e:
             raise SensorException(error_message=e,error_detail=sys)
+        
 
     @classmethod  
     def get_data_transformer_object(cls)->Pipeline:
@@ -31,14 +33,15 @@ class DataTransformation:
             simple_imputer = SimpleImputer(strategy="constant", fill_value=0)
             robust_scaler = RobustScaler()
 
-            constant_pipeline = Pipeline(steps=[
+            pipeline = Pipeline(steps=[
                 ('Imputer', simple_imputer),
                 ('RobustScaler',robust_scaler)
             ])
-            return Pipeline          
+            return pipeline          
 
         except Exception as e:
             raise SensorException(e,sys)
+        
         
     def initiate_data_transformation(self, )->artifact_entity.DataTransformationArtifact:
         try:
@@ -57,13 +60,15 @@ class DataTransformation:
             label_encoder = LabelEncoder()
             label_encoder.fit(target_feature_train_df)
 
+            
             ## transformation on target column
             target_feature_train_arr = label_encoder.transform(target_feature_train_df)
             target_feature_test_arr = label_encoder.transform(target_feature_test_df)
-
+            
             transformation_pipeline = DataTransformation.get_data_transformer_object()
             transformation_pipeline.fit(input_feature_train_df)
 
+            
             ## transformating input feature
             input_feature_train_arr = transformation_pipeline.transform(input_feature_train_df)
             input_feature_test_arr = transformation_pipeline.transform(input_feature_test_df)

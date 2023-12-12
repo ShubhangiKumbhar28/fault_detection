@@ -6,7 +6,9 @@ from typing import Optional
 import os,sys 
 import pandas as pd
 from sensor import utils
+from sensor.config import TARGET_COLUMN
 import numpy as np
+
 
 class DataValidation:
     def __init__(self,data_validation_config:config_entity.DataValidationConfig,
@@ -114,7 +116,7 @@ class DataValidation:
             logging.info(f"Reading test dataframe")
             test_df = pd.read_csv(self.data_ingestion_artifact.test_file_path)
 
-            exclude_columns = ["class"]
+            exclude_columns = ["TARGET_COLUMN"]
             base_df = utils.convert_columns_float(df= base_df, exclude_columns=exclude_columns)
             train_df = utils.convert_columns_float(df= train_df, exclude_columns=exclude_columns)
             test_df = utils.convert_columns_float(df= test_df, exclude_columns=exclude_columns)

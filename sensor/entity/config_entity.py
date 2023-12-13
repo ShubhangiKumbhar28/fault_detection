@@ -59,7 +59,8 @@ class ModelTrainerConfig:
         self.overfitting_threshold = 0.1
 
 class ModelEvaluationConfig: 
-    pass
+    def __init__(self, training_pipeline_config:TrainingPipelineConfig):
+        self.change_threshold = 0.01
 
 class ModelPusherConfig: 
     pass

@@ -12,6 +12,7 @@ class ModelTrainer:
                  data_transformation_artifact:artifact_entity.DataTransformationArtifact
                  ):
         try:
+            logging.info(f"{'>>'*20} Model Trainer {'<<'*20}")
             self.model_trainer_config = model_trainer_config
             self.data_transformation_artifact = data_transformation_artifact
         except Exception as e:
@@ -53,7 +54,7 @@ class ModelTrainer:
            f1_train_score = f1_score(y_true=y_train, y_pred=yhat_train)
 
            logging.info(f"Calculating f1 test score")
-           yhat_test = model.predict(x_train)
+           yhat_test = model.predict(x_test)
            f1_test_score = f1_score(y_true=y_test, y_pred=yhat_test)
 
            logging.info(f"train score : {f1_train_score} and test score : {f1_test_score}")
@@ -66,7 +67,7 @@ class ModelTrainer:
            logging.info(f"checking if model is overfitting or not")
            diff = abs(f1_train_score-f1_test_score)
            
-           if diff >self.model_trainer_config.overfitting_threshold:
+           if diff > self.model_trainer_config.overfitting_threshold:
                raise Exception(f"Train and test score diff: {diff} is more than overfitting threshold {self.model_trainer_config.overfitting_threshold}")
            
            ## save the trained model

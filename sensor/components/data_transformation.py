@@ -78,7 +78,7 @@ class DataTransformation:
             input_feature_train_arr,target_feature_train_arr = smt.fit_resample(input_feature_train_arr,target_feature_train_arr)
             logging.info(f"After resampling in training set Input: {input_feature_train_arr.shape} Target: {target_feature_train_arr.shape} ")
 
-            logging.info(f"Before resampling in training set Input: {input_feature_test_arr.shape}, Target: {target_feature_test_arr.shape}")
+            logging.info(f"Before resampling in testing set Input: {input_feature_test_arr.shape}, Target: {target_feature_test_arr.shape}")
             input_feature_test_arr, target_feature_test_arr = smt.fit_resample(input_feature_test_arr, target_feature_test_arr)
             logging.info(f"After resampling in testing set Input: {input_feature_test_arr.shape} Target: {target_feature_test_arr.shape} ")
 

@@ -13,7 +13,7 @@ class ModelEvaluation:
 
     def __init__(self, model_eval_config:config_entity.ModelEvaluationConfig,
                  data_ingestion_artifact:artifact_entity.DataIngestionArtifact,
-                 data_transformation_artifact:artifact_entity.DataIngestionArtifact,
+                 data_transformation_artifact:artifact_entity.DataTransformationArtifact,
                  model_trainer_artifact:artifact_entity.ModelTrainerArtifact
                  ):
         try:
@@ -56,7 +56,7 @@ class ModelEvaluation:
 
             ## currently trained model objects
             logging.info("Currently trained model objects")
-            current_transformer = load_object(file_path=self.data_transformation_artifact.transformer_path)            
+            current_transformer = load_object(file_path=self.data_transformation_artifact.transform_object_path)            
             current_model = load_object(file_path = self.model_trainer_artifact.model_path)
             current_target_encoder = load_object(file_path=self.data_transformation_artifact.target_encoder_path)
 
@@ -67,7 +67,8 @@ class ModelEvaluation:
 
             ## accuracy using previously trained model
             logging.info(f"Accuracy using previously trained model")
-            input_arr = transformer.transform(test_df)
+            input_feature_name = list(transformer.feature_names_in_) ##*
+            input_arr = transformer.transform(test_df[input_feature_name])  ##*
             y_pred = model.predict(input_arr)
 
             print(f"Prediction using previous model: {target_encoder.inverse_transform(y_pred[:5])}")
@@ -75,20 +76,21 @@ class ModelEvaluation:
 
             ## Accuracy using current trained model
             logging.info(f"Accuracy using current trained model")
-            input_arr = current_transformer.transform(test_df)
+            input_feature_name = list(current_transformer.feature_names_in_)
+            input_arr = current_transformer.transform(test_df[input_feature_name])
             y_pred = current_transformer.predict(input_arr)
             y_true = current_target_encoder.transform(target_df)
             print(f"Prediction using trained model: {current_target_encoder.inverse_transform(y_pred[:5])}")
             current_model_score = f1_score(y_true=y_true,y_pred=y_pred)
             logging.info(f"Accuracy using current trained model: {current_model_score}")
 
-            if current_model_score < previous_model_score:
+            if current_model_score <= previous_model_score:
                 logging.info(f"Current trained model is not better that previous model")
                 raise Exception("Current trained model is not better that previous model")
             
             model_eval_artifact = artifact_entity.ModelEvaluationArtifact(is_model_accepted=True,
                                                     improved_accuracy=current_model_score.previous_model_score)
-            logging.info(f"Model eval artifact: {mode_eval_artifact}")
+            logging.info(f"Model eval artifact: {model_eval_artifact}")
 
             return mode_eval_artifact           
         except Exception as e:
